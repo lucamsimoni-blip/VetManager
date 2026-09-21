@@ -3,7 +3,20 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-# --- VENTANA PRINCIPAL (MENÚ) ---
+# FUNCIONES AUXILIARES 
+def mensaje_en_construccion(modulo):
+    messagebox.showinfo("Información", f"El módulo de {modulo} estará disponible próximamente.")
+
+def guardar_turno(ventana):
+    messagebox.showinfo("Éxito", "Turno guardado con éxito")
+    ventana.destroy()
+
+def guardar_mascota(ventana):
+    messagebox.showinfo("Éxito", "Mascota guardada con éxito")
+    ventana.destroy()
+
+
+#  VENTANA PRINCIPAL (MENÚ) 
 def abrir_menu():
     global root
     root = tk.Tk()
@@ -43,10 +56,8 @@ def abrir_menu():
 
     root.mainloop()
 
-def mensaje_en_construccion(modulo):
-    messagebox.showinfo("Información", f"El módulo de {modulo} estará disponible próximamente.")
 
-# --- PANTALLA: NUEVO TURNO ---
+# -PANTALLA: NUEVO TURNO -
 def abrir_ventana_turnos():
     ven_turno = tk.Toplevel(root)
     ven_turno.title("VetManager - Nuevo Turno")
@@ -82,14 +93,14 @@ def abrir_ventana_turnos():
     e_estado.place(x=180, y=260)
 
     # Botones guardar y cancelar
-    btn_guardar = tk.Button(ven_turno, text="[ Guardar ]", bg="#d4efdf", width=12, command=lambda: [messagebox.SUCCESS if hasattr(messagebox, 'SUCCESS') else messagebox.showinfo("Éxito", "Turno guardado con éxito"), ven_turno.destroy()])
+    btn_guardar = tk.Button(ven_turno, text="[ Guardar ]", bg="#d4efdf", width=12, command=lambda: guardar_turno(ven_turno))
     btn_guardar.place(x=100, y=310)
 
     btn_cancelar = tk.Button(ven_turno, text="[ Cancelar ]", bg="#fadbd8", width=12, command=ven_turno.destroy)
     btn_cancelar.place(x=240, y=310)
 
 
-# --- PANTALLA: NUEVA MASCOTA ---
+# PANTALLA: NUEVA MASCOTA
 def abrir_ventana_mascota():
     ven_mascota = tk.Toplevel(root)
     ven_mascota.title("VetManager - Nueva Mascota")
@@ -111,11 +122,12 @@ def abrir_ventana_mascota():
     e_cliente = tk.Entry(ven_mascota, width=25)
     e_cliente.place(x=150, y=140)
 
-    btn_guardar = tk.Button(ven_mascota, text="[ Guardar ]", bg="#d4efdf", width=10, command=ven_mascota.destroy)
+    btn_guardar = tk.Button(ven_mascota, text="[ Guardar ]", bg="#d4efdf", width=10, command=lambda: guardar_mascota(ven_mascota))
     btn_guardar.place(x=90, y=190)
 
     btn_cancelar = tk.Button(ven_mascota, text="[ Cancelar ]", bg="#fadbd8", width=10, command=ven_mascota.destroy)
     btn_cancelar.place(x=210, y=190)
+
 
 # Ejecutar programa principal
 if __name__ == "__main__":
