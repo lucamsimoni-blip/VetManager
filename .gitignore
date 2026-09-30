@@ -1,0 +1,15 @@
+# Cache de Python (archivos compilados .pyc)
+__pycache__/
+*.pyc
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Archivos de configuración de VS Code / IDEs
+.vscode/
+.idea/
+
+# Base de datos local o volcados temporales (opcional)
+*.log

@@ -7,7 +7,7 @@ Trabajo Integrador ABP — Programación I / Base de Datos, Módulo Programador,
 Integrantes
 Luca Simoni — Coordinador / Acceso a datos
 Fernando Quarín — Modelo de datos
-Gustavo Shadow — Interfaz
+Gustavo García Quintero — Interfaz
 Joaquín Zalazar — Validaciones / Documentación y pruebas
 
 
