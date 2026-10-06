@@ -36,3 +36,19 @@ def obtener_mascotas():
     except mysql.connector.Error as err:
         print(f"Error al obtener mascotas: {err}")
         return []
+    
+def obtener_especies():
+    conn = obtener_conexion()
+    if not conn:
+        return []
+    try:
+        cursor = conn.cursor()
+        sql = "SELECT id_especie, nombre FROM especie"
+        cursor.execute(sql)
+        filas = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return filas
+    except mysql.connector.Error as err:
+        print(f"Error al obtener especies: {err}")
+        return []

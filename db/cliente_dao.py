@@ -52,3 +52,34 @@ def obtener_mascotas_por_cliente(id_cliente):
     except mysql.connector.Error as err:
         print(f"Error al obtener mascotas del cliente: {err}")
         return []
+    
+    
+def actualizar_cliente(id_cliente, nombre, apellido, telefono, email):
+    conn = obtener_conexion()
+    if not conn: return False
+    try:
+        cursor = conn.cursor()
+        sql = "UPDATE cliente SET nombre=%s, apellido=%s, telefono=%s, email=%s WHERE id_cliente=%s"
+        cursor.execute(sql, (nombre, apellido, telefono, email, id_cliente))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except mysql.connector.Error as err:
+        print(f"Error al actualizar cliente: {err}")
+        return False
+
+def eliminar_cliente(id_cliente):
+    conn = obtener_conexion()
+    if not conn: return False
+    try:
+        cursor = conn.cursor()
+        sql = "DELETE FROM cliente WHERE id_cliente = %s"
+        cursor.execute(sql, (id_cliente,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except mysql.connector.Error as err:
+        print(f"Error al eliminar cliente: {err}")
+        return False
