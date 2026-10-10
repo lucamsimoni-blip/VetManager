@@ -52,3 +52,34 @@ def obtener_especies():
     except mysql.connector.Error as err:
         print(f"Error al obtener especies: {err}")
         return []
+    
+    
+def actualizar_mascota(id_mascota, nombre, id_especie):
+    conn = obtener_conexion()
+    if not conn: return False
+    try:
+        cursor = conn.cursor()
+        sql = "UPDATE mascota SET nombre=%s, id_especie=%s WHERE id_mascota=%s"
+        cursor.execute(sql, (nombre, id_especie, id_mascota))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except mysql.connector.Error as err:
+        print(f"Error al actualizar mascota: {err}")
+        return False
+
+def eliminar_mascota(id_mascota):
+    conn = obtener_conexion()
+    if not conn: return False
+    try:
+        cursor = conn.cursor()
+        sql = "DELETE FROM mascota WHERE id_mascota = %s"
+        cursor.execute(sql, (id_mascota,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except mysql.connector.Error as err:
+        print(f"Error al eliminar mascota: {err}")
+        return False
