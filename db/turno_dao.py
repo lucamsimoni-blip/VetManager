@@ -99,4 +99,4 @@ def eliminar_turno(id_turno):
         return True
     except mysql.connector.Error as err:
         print(f"Error al eliminar turno: {err}")
-        return False
+        return False    
