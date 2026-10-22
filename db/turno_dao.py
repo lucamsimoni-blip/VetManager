@@ -55,6 +55,7 @@ def obtener_reporte_turnos():
             JOIN mascota m ON t.id_mascota = m.id_mascota
             JOIN cliente c ON m.id_cliente = c.id_cliente
             JOIN veterinario v ON t.id_veterinario = v.id_veterinario
+            ORDER BY t.fecha ASC, t.hora ASC
         """
         cursor.execute(query)
         reporte = cursor.fetchall()
@@ -100,3 +101,40 @@ def eliminar_turno(id_turno):
     except mysql.connector.Error as err:
         print(f"Error al eliminar turno: {err}")
         return False    
+    
+def buscar_turnos(criterio):
+    conn = obtener_conexion()
+    if not conn:
+        return []
+    try:
+        cursor = conn.cursor()
+        query = """
+            SELECT 
+                t.id_turno,
+                t.fecha,
+                TIME_FORMAT(t.hora, '%H:%i') AS hora,
+                m.nombre AS mascota,
+                CONCAT(c.nombre, ' ', c.apellido) AS cliente,
+                CONCAT(v.nombre, ' ', v.apellido) AS veterinario,
+                t.motivo,
+                t.estado
+            FROM turno t
+            JOIN mascota m ON t.id_mascota = m.id_mascota
+            JOIN cliente c ON m.id_cliente = c.id_cliente
+            JOIN veterinario v ON t.id_veterinario = v.id_veterinario
+            WHERE m.nombre LIKE %s 
+               OR c.nombre LIKE %s 
+               OR c.apellido LIKE %s 
+               OR v.nombre LIKE %s
+               OR t.estado LIKE %s
+            ORDER BY t.fecha ASC, t.hora ASC
+        """
+        val = f"%{criterio}%"
+        cursor.execute(query, (val, val, val, val, val))
+        resultados = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return resultados
+    except mysql.connector.Error as err:
+        print(f"Error al buscar turnos: {err}")
+        return []

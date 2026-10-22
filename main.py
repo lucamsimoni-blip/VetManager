@@ -16,7 +16,7 @@ def cargar_turnero_principal(tree_turnos):
 def main():
     root = tk.Tk()
     root.title("VetManager - Centro de Control")
-    root.geometry("950x520")
+    root.geometry("950x540")
     root.resizable(False, False)
 
     frame_top = tk.Frame(root, bg="#2c3e50", height=60)
@@ -74,13 +74,23 @@ def main():
         command=lambda: abrir_ventana_clientes(root)
     )
     btn_gest_clientes.pack(side="right", padx=5, pady=12)
-
-    # --- TABLA CENTRAL ---
+    
+    # --- TABLA CENTRAL CON BARRA DE BÚSQUEDA ---
     frame_center = tk.LabelFrame(root, text=" Turnero General / Estado de Atenciones ", font=("Arial", 10, "bold"), padx=10, pady=10)
     frame_center.pack(fill="both", expand=True, padx=20, pady=15)
 
+    # Subframe para la barra de búsqueda
+    frame_busqueda = tk.Frame(frame_center)
+    frame_busqueda.pack(fill="x", pady=(0, 8))
+
+    lbl_buscar = tk.Label(frame_busqueda, text="🔍 Buscar turno:", font=("Arial", 9, "bold"))
+    lbl_buscar.pack(side="left", padx=(0, 5))
+
+    entry_buscar = tk.Entry(frame_busqueda, font=("Arial", 10), width=35)
+    entry_buscar.pack(side="left", padx=5)
+
     columnas = ("id", "fecha", "hora", "mascota", "cliente", "veterinario", "motivo", "estado")
-    tree_turnos = ttk.Treeview(frame_center, columns=columnas, show="headings", height=12)
+    tree_turnos = ttk.Treeview(frame_center, columns=columnas, show="headings", height=11)
 
     tree_turnos.heading("id", text="ID")
     tree_turnos.heading("fecha", text="Fecha")
@@ -97,10 +107,24 @@ def main():
     tree_turnos.column("mascota", width=100)
     tree_turnos.column("cliente", width=140)
     tree_turnos.column("veterinario", width=130)
-    tree_turnos.column("motivo", width=180)
+    tree_turnos.column("motivo", width=175)
     tree_turnos.column("estado", width=90, anchor="center")
 
     tree_turnos.pack(fill="both", expand=True)
+
+    # --- LÓGICA DE BÚSQUEDA EN TIEMPO REAL ---
+    def filtrar_tabla(event):
+        criterio = entry_buscar.get().strip()
+        for item in tree_turnos.get_children():
+            tree_turnos.delete(item)
+        
+        resultados = turno_dao.buscar_turnos(criterio) if criterio else turno_dao.obtener_reporte_turnos()
+        
+        for fila in resultados:
+            tree_turnos.insert("", "end", values=fila)
+
+    # Vincular evento de tipeo
+    entry_buscar.bind("<KeyRelease>", filtrar_tabla)
 
     # Atajo: hacer doble clic en una fila abre directamente la ventana de edición
     tree_turnos.bind("<Double-1>", lambda event: editar_turno_seleccionado())
