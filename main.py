@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from db import turno_dao
 from views.ventana_clientes import abrir_ventana_clientes
 from views.ventana_turnos import abrir_ventana_nuevo_turno
+from views.ventana_veterinarios import abrir_ventana_veterinarios
 
 
 def cargar_turnero_principal(tree_turnos):
@@ -69,6 +70,12 @@ def main():
     )
     btn_editar_turno.pack(side="right", padx=5, pady=12)
 
+    btn_gest_vets = tk.Button(
+        frame_top, text="🩺 Gestor Veterinarios", bg="#8e44ad", fg="white", font=("Arial", 9, "bold"),
+        command=lambda: abrir_ventana_veterinarios(root)
+    )
+    btn_gest_vets.pack(side="right", padx=5, pady=12)
+
     btn_gest_clientes = tk.Button(
         frame_top, text="👥 Gestor Clientes / Mascotas", bg="#2980b9", fg="white", font=("Arial", 9, "bold"),
         command=lambda: abrir_ventana_clientes(root)
@@ -106,8 +113,8 @@ def main():
     tree_turnos.column("hora", width=60, anchor="center")
     tree_turnos.column("mascota", width=100)
     tree_turnos.column("cliente", width=140)
-    tree_turnos.column("veterinario", width=130)
-    tree_turnos.column("motivo", width=175)
+    tree_turnos.column("veterinario", width=150)
+    tree_turnos.column("motivo", width=155)
     tree_turnos.column("estado", width=90, anchor="center")
 
     tree_turnos.pack(fill="both", expand=True)
@@ -135,3 +142,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+
