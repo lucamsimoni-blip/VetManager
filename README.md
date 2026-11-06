@@ -75,19 +75,26 @@ python -m pip install mysql-connector-python
 Ejecutá el contenido de schemas.sql en MySQL Workbench o desde el
 cliente de MySQL. El script crea la base vet_manager, las tablas, sus
 relaciones y registros de ejemplo.
-5. Configurar la conexión
-Revisá db/conexion.py. La configuración debe coincidir con tu
-instalación de MySQL:
-DB_CONFIG = {
-    "host": "127.0.0.1",
-    "user": "TU_USUARIO",
-    "password": "TU_CONTRASEÑA",
-    "database": "vet_manager"
-}
-Los valores anteriores son ilustrativos: utilizá tus credenciales
-locales. No subas contraseñas reales al repositorio. Para un proyecto
-compartido o de producción, conviene leerlas desde variables de entorno
-y usar un usuario de MySQL con permisos limitados.
+5. Configurar las variables de entorno
+
+La aplicación ya no guarda el usuario ni la contraseña de MySQL en
+db/conexion.py. Antes de ejecutar VetManager, definí estas variables
+en la terminal de PowerShell (reemplazá los valores por los de tu
+instalación local):
+
+$env:DB_HOST = "127.0.0.1"
+$env:DB_USER = "tu_usuario_mysql"
+$env:DB_PASSWORD = "tu_contraseña_mysql"
+$env:DB_NAME = "vet_manager"
+
+Estas variables quedan disponibles en esa ventana de PowerShell.
+Si abrís otra terminal, tenés que volver a definirlas. No publiques
+tus credenciales ni las guardes en archivos versionados.
+
+Por seguridad, se recomienda crear en MySQL un usuario específico
+para VetManager con permisos únicamente sobre la base vet_manager,
+en lugar de utilizar root.
+
 6. Ejecutar la aplicación
 Desde la carpeta raíz del proyecto:
 python main.py
