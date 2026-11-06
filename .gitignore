@@ -1,15 +1,22 @@
-# Cache de Python (archivos compilados .pyc)
+# Cache de Python
 __pycache__/
-*.pyc
+*.py[cod]
 
 # Entornos virtuales
 venv/
 .venv/
 env/
 
-# Archivos de configuración de VS Code / IDEs
+# Variables de entorno y secretos locales
+.env
+.env.*
+
+# Se permite versionar una plantilla sin secretos
+!.env.example
+
+# Configuración de editores
 .vscode/
 .idea/
 
-# Base de datos local o volcados temporales (opcional)
+# Logs y archivos temporales
 *.log
