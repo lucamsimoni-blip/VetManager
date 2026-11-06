@@ -94,7 +94,7 @@ def actualizar_cliente(id_cliente, nombre, apellido, telefono, email, direccion=
             (nombre, apellido, telefono, email, direccion, id_cliente)
         )
         conn.commit()
-        return cursor.rowcount > 0
+        return True
     except mysql.connector.Error as err:
         print(f"Error al actualizar cliente: {err}")
         return False
