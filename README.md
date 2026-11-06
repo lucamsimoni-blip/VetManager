@@ -70,30 +70,22 @@ python -m venv .venv
 Si usás el Símbolo del sistema (CMD), la activación es:
 .venv\Scripts\activate.bat
 3. Instalar la dependencia
-python -m pip install mysql-connector-python
+python -m pip install -r requirements.txt
 4. Crear la base de datos
 Ejecutá el contenido de schemas.sql en MySQL Workbench o desde el
 cliente de MySQL. El script crea la base vet_manager, las tablas, sus
 relaciones y registros de ejemplo.
 5. Configurar las variables de entorno
 
-La aplicación ya no guarda el usuario ni la contraseña de MySQL en
-db/conexion.py. Antes de ejecutar VetManager, definí estas variables
-en la terminal de PowerShell (reemplazá los valores por los de tu
-instalación local):
+Copiá el archivo .env.example y renombrá la copia como .env. Luego
+completá DB_USER y DB_PASSWORD con las credenciales de tu instalación
+local de MySQL. El archivo .env se carga automáticamente al iniciar
+la aplicación y está excluido del repositorio mediante .gitignore.
 
-$env:DB_HOST = "127.0.0.1"
-$env:DB_USER = "tu_usuario_mysql"
-$env:DB_PASSWORD = "tu_contraseña_mysql"
-$env:DB_NAME = "vet_manager"
-
-Estas variables quedan disponibles en esa ventana de PowerShell.
-Si abrís otra terminal, tenés que volver a definirlas. No publiques
-tus credenciales ni las guardes en archivos versionados.
-
-Por seguridad, se recomienda crear en MySQL un usuario específico
-para VetManager con permisos únicamente sobre la base vet_manager,
-en lugar de utilizar root.
+No publiques tus credenciales ni compartas el archivo .env. Por
+seguridad, se recomienda crear en MySQL un usuario específico para
+VetManager con permisos únicamente sobre la base vet_manager, en
+lugar de utilizar root.
 
 6. Ejecutar la aplicación
 Desde la carpeta raíz del proyecto:
