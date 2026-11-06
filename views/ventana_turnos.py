@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime, timedelta
 from db import turno_dao, mascota_dao
+from utils import validaciones
 
 
 def generar_opciones_fechas(dias_adelante=30):
@@ -77,7 +78,7 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
         # datos_turno = (id_turno, fecha, hora, mascota, cliente, veterinario, motivo, estado)
         id_turno_edit = datos_turno[0]
         cb_fec.set(str(datos_turno[1]))
-        
+
         # Formatear la hora de HH:MM:SS a HH:MM si hace falta
         hora_str = str(datos_turno[2])
         if len(hora_str.split(":")) == 3:
@@ -114,6 +115,16 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
             messagebox.showwarning("Validación", "Debe completar todos los campos del formulario.")
             return
 
+        fecha_valida, mensaje_fecha = validaciones.validar_fecha(fecha)
+        if not fecha_valida:
+            messagebox.showwarning("Validación de fecha", mensaje_fecha)
+            return
+
+        hora_valida, mensaje_hora = validaciones.validar_hora(hora)
+        if not hora_valida:
+            messagebox.showwarning("Validación de hora", mensaje_hora)
+            return
+
         id_mascota = mapa_mascotas[masc_sel]
         id_vet = mapa_vets[vet_sel]
 
@@ -132,11 +143,11 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
             messagebox.showerror("Error", "No se pudo guardar el turno.")
 
     btn = tk.Button(
-        ven_t, 
-        text="Actualizar Turno" if es_edicion else "Guardar Turno", 
-        bg="#27ae60", 
-        fg="white", 
-        font=("Arial", 9, "bold"), 
+        ven_t,
+        text="Actualizar Turno" if es_edicion else "Guardar Turno",
+        bg="#27ae60",
+        fg="white",
+        font=("Arial", 9, "bold"),
         command=guardar
     )
     btn.place(x=150, y=290)
