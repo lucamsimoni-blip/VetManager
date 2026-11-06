@@ -29,6 +29,9 @@ def validar_fecha(fecha_texto):
     except ValueError:
         return False, "La fecha debe ser válida y tener el formato AAAA-MM-DD."
 
+    if fecha.strftime("%Y-%m-%d") != fecha_texto:
+        return False, "La fecha debe tener exactamente el formato AAAA-MM-DD."
+
     if fecha < date.today():
         return False, "No se pueden agendar turnos en fechas anteriores a hoy."
 
@@ -41,6 +44,9 @@ def validar_hora(hora_texto):
         hora = datetime.strptime(hora_texto, "%H:%M").time()
     except ValueError:
         return False, "La hora debe ser válida y tener el formato HH:MM."
+
+    if hora.strftime("%H:%M") != hora_texto:
+        return False, "La hora debe tener exactamente el formato HH:MM."
 
     hora_minima = datetime.strptime("08:00", "%H:%M").time()
     hora_maxima = datetime.strptime("18:30", "%H:%M").time()
