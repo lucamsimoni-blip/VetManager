@@ -29,21 +29,18 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
     ven_t.geometry("420x350")
     ven_t.resizable(False, False)
 
-    # 1. Cargar datos de la BD
     mascotas_db = mascota_dao.obtener_mascotas()
     vets_db = turno_dao.obtener_veterinarios()
 
     mapa_mascotas = {f"{m[1]} (ID: {m[0]})": m[0] for m in mascotas_db}
     mapa_vets = {f"{v[1]} {v[2]} (ID: {v[0]})": v[0] for v in vets_db}
 
-    # Mapas inversos para precargar en modo edición
     mapa_mascotas_inv = {m[0]: f"{m[1]} (ID: {m[0]})" for m in mascotas_db}
     mapa_vets_inv = {v[0]: f"{v[1]} {v[2]} (ID: {v[0]})" for v in vets_db}
 
     opciones_fechas = generar_opciones_fechas(dias_adelante=30)
     opciones_horas = generar_opciones_horas(inicio=8, fin=19, intervalo_min=30)
 
-    # --- CAMPOS DE LA INTERFAZ ---
     tk.Label(ven_t, text="Mascota:").place(x=40, y=40)
     cb_masc = ttk.Combobox(ven_t, values=list(mapa_mascotas.keys()), width=27, state="readonly")
     cb_masc.place(x=160, y=40)
@@ -69,17 +66,18 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
     cb_vet.place(x=160, y=200)
 
     tk.Label(ven_t, text="Estado:").place(x=40, y=240)
-    cb_est = ttk.Combobox(ven_t, values=["Pendiente", "Atendido", "Cancelado"], width=27, state="readonly")
+    cb_est = ttk.Combobox(
+        ven_t,
+        values=["Pendiente", "Atendido", "Cancelado"],
+        width=27,
+        state="readonly"
+    )
     cb_est.set("Pendiente")
     cb_est.place(x=160, y=240)
 
-    # --- PRECARGA DE DATOS SI ES EDICIÓN ---
     if es_edicion:
-        # datos_turno = (id_turno, fecha, hora, mascota, cliente, veterinario, motivo, estado)
-        id_turno_edit = datos_turno[0]
         cb_fec.set(str(datos_turno[1]))
 
-        # Formatear la hora de HH:MM:SS a HH:MM si hace falta
         hora_str = str(datos_turno[2])
         if len(hora_str.split(":")) == 3:
             hora_str = ":".join(hora_str.split(":")[:2])
@@ -88,13 +86,12 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
         e_mot.insert(0, datos_turno[6])
         cb_est.set(datos_turno[7])
 
-        # Buscar coincidencia parcial para mascota y vet por nombre/texto de la fila
-        for key in mapa_mascotas.keys():
+        for key in mapa_mascotas:
             if datos_turno[3] in key:
                 cb_masc.set(key)
                 break
 
-        for key in mapa_vets.keys():
+        for key in mapa_vets:
             if datos_turno[5] in key:
                 cb_vet.set(key)
                 break
@@ -127,12 +124,29 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
 
         id_mascota = mapa_mascotas[masc_sel]
         id_vet = mapa_vets[vet_sel]
+        id_turno = datos_turno[0] if es_edicion else None
+
+        disponible, mensaje = turno_dao.verificar_disponibilidad_turno(
+            fecha,
+            hora,
+            id_vet,
+            id_mascota,
+            id_turno=id_turno,
+            estado=estado
+        )
+        if not disponible:
+            messagebox.showwarning("Horario no disponible", mensaje)
+            return
 
         if es_edicion:
-            exito = turno_dao.actualizar_turno(datos_turno[0], fecha, hora, motivo, estado, id_vet, id_mascota)
+            exito = turno_dao.actualizar_turno(
+                id_turno, fecha, hora, motivo, estado, id_vet, id_mascota
+            )
             msg_ok = "Turno actualizado correctamente."
         else:
-            exito = turno_dao.insertar_turno(fecha, hora, motivo, estado, id_vet, id_mascota)
+            exito = turno_dao.insertar_turno(
+                fecha, hora, motivo, estado, id_vet, id_mascota
+            )
             msg_ok = "Turno agendado con éxito."
 
         if exito:
@@ -140,7 +154,10 @@ def abrir_ventana_nuevo_turno(parent, callback_recargar, datos_turno=None):
             ven_t.destroy()
             callback_recargar()
         else:
-            messagebox.showerror("Error", "No se pudo guardar el turno.")
+            messagebox.showerror(
+                "Error",
+                "No se pudo guardar el turno. Es posible que otro turno haya ocupado ese horario."
+            )
 
     btn = tk.Button(
         ven_t,
